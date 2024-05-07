@@ -1,10 +1,22 @@
 import yaml
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter
 
 
-def load_goods_from_yaml(file_path):
-    with open(file_path, 'r') as file:
-        data = yaml.safe_load(file)
+class LoadGoodsAPIView(APIView):
+    
+    def post(self, request):
+        file_path = request.data.get('file_path')
+        if not file_path:
+            return Response({'error': 'File path is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            with open(file_path, 'r') as file:
+                data = yaml.safe_load(file)
+        except FileNotFoundError:
+            return Response({'error': 'File not found'}, status=status.HTTP_404_NOT_FOUND)
 
         shop_name = data.get('shop')
         shop, created = Shop.objects.get_or_create(name=shop_name)
@@ -43,3 +55,5 @@ def load_goods_from_yaml(file_path):
                     parameter=parameter,
                     value=value
                 )
+
+        return Response({'message': 'Goods loaded successfully'}, status=status.HTTP_200_OK)

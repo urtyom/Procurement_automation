@@ -22,5 +22,4 @@ from big_purchases.views import LoadGoodsAPIView, demo
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/load_goods/', LoadGoodsAPIView.as_view(), name='load_goods'),
-    path('demo/', demo)
 ]

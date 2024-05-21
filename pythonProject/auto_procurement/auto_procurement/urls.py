@@ -17,9 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from big_purchases.views import LoadGoodsAPIView, demo
+from big_purchases.views import UploadYAMLView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/load_goods/', LoadGoodsAPIView.as_view(), name='load_goods'),
+    path('upload-yaml/', UploadYAMLView.as_view(), name='upload_yaml'),
 ]

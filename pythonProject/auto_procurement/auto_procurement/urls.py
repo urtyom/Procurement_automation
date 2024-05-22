@@ -17,9 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from big_purchases.views import UploadYAMLView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from big_purchases.views import UploadYAMLView, RegisterView, ProductListView, CartView, CartItemDeleteView, ContactCreateView, ConfirmOrderView, OrderHistoryView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('upload-yaml/', UploadYAMLView.as_view(), name='upload_yaml'),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', TokenObtainPairView.as_view(), name='login'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('products/', ProductListView.as_view(), name='product-list'),
+    path('cart/', CartView.as_view(), name='cart'),
+    path('cart/item/<int:pk>/', CartItemDeleteView.as_view(), name='cart-item-delete'),
+    path('contacts/', ContactCreateView.as_view(), name='contact-create'),
+    path('order/confirm/', ConfirmOrderView.as_view(), name='order-confirm'),
+    path('orders/history/', OrderHistoryView.as_view(), name='order-history'),
 ]

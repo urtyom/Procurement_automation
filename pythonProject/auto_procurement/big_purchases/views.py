@@ -1,8 +1,7 @@
 import yaml
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, generics, status, views
-from django.core.files.storage import FileSystemStorage
+from rest_framework import generics, status, views
 from .models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, Contact
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
@@ -18,22 +17,22 @@ class UploadYAMLView(APIView):
         if not file:
             return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
 
-        fs = FileSystemStorage()
-        filename = fs.save(file.name, file)
-        file_path = fs.path(filename)
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                data = yaml.safe_load(f)
+            data = yaml.safe_load(file.read())
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Получаем или создаем магазин
         shop_name = data['shop']
         shop, created = Shop.objects.get_or_create(name=shop_name)
+
+        # Добавляем категории
         for category_data in data['categories']:
             category, created = Category.objects.get_or_create(id=category_data['id'],
                                                                defaults={'name': category_data['name']})
             shop.categories.add(category)
 
+        # Добавляем товары и их параметры
         for product_data in data['goods']:
             category = Category.objects.get(id=product_data['category'])
             product, created = Product.objects.get_or_create(id=product_data['id'], category=category,

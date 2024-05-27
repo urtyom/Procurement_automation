@@ -141,3 +141,16 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+import configparser
+
+config = configparser.ConfigParser()
+config.read('settings.ini')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.com'  # SMTP сервер почтового провайдера
+EMAIL_PORT = 465
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config['EMAIL']['login']  # email на Яндексе
+EMAIL_HOST_PASSWORD = config['EMAIL']['password']  # пароль от email
+DEFAULT_FROM_EMAIL = config['EMAIL']['login']  # Email отправителя

@@ -19,20 +19,24 @@ class UserSerializer(serializers.ModelSerializer):
         )
         return user
 
+
 class ShopSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shop
         fields = '__all__'
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = '__all__'
 
+
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
 
 class ProductInfoSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
@@ -42,10 +46,12 @@ class ProductInfoSerializer(serializers.ModelSerializer):
         model = ProductInfo
         fields = '__all__'
 
+
 class ParameterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Parameter
         fields = '__all__'
+
 
 class ProductParameterSerializer(serializers.ModelSerializer):
     parameter = ParameterSerializer()
@@ -54,6 +60,7 @@ class ProductParameterSerializer(serializers.ModelSerializer):
         model = ProductParameter
         fields = '__all__'
 
+
 class OrderItemSerializer(serializers.ModelSerializer):
     product_info = ProductInfoSerializer()
 
@@ -61,12 +68,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = '__all__'
 
+
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemSerializer(many=True)
 
     class Meta:
         model = Order
         fields = '__all__'
+
 
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:

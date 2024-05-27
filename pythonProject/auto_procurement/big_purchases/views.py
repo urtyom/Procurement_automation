@@ -9,6 +9,8 @@ from django.shortcuts import get_object_or_404
 from .serializers import UserSerializer, ShopSerializer, CategorySerializer, ProductSerializer, ProductInfoSerializer, OrderSerializer, OrderItemSerializer, ContactSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 class UploadYAMLView(APIView):
@@ -61,6 +63,16 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    def perform_create(self, serializer):
+        user = serializer.save()
+        send_mail(
+            'Подтверждение регистрации',
+            'Вы успешно зарегистрировались на нашем сайте.',
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            fail_silently=False,
+        )
+
 
 # Вход пользователя
 class LoginView(TokenObtainPairView):
@@ -88,12 +100,10 @@ class CartView(generics.ListCreateAPIView):
     serializer_class = OrderItemSerializer
     permission_classes = [IsAuthenticated]
 
-
     def get_queryset(self):
         user = self.request.user
         order, created = Order.objects.get_or_create(user=user, status='cart')
         return OrderItem.objects.filter(order=order)
-
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
@@ -147,6 +157,15 @@ class ConfirmOrderView(views.APIView):
 
         order.status = 'confirmed'
         order.save()
+
+        # Отправка email с подтверждением заказа
+        send_mail(
+            'Подтверждение заказа',
+            'Ваш заказ был подтвержден.',
+            settings.EMAIL_HOST_USER,
+            [user.email],
+            fail_silently=False,
+        )
 
         return Response({"message": "Order confirmed"}, status=status.HTTP_200_OK)
 

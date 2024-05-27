@@ -145,7 +145,7 @@ SIMPLE_JWT = {
 import configparser
 
 config = configparser.ConfigParser()
-config.read('settings.ini')
+config.read('C:\\python\\diplomniy_proekt\\pythonProject\\settings.ini')
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.com'  # SMTP сервер почтового провайдера
